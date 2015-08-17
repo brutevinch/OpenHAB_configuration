@@ -1,0 +1,19 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+/*----------Памятка
+Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
+*/
+
+rule "FindMyiPhone state"
+        when
+		Item gButtons changed
+        then
+ 		if(gButtons.members
+   			.filter( item| item.state == ON )
+                        .forEach( item| item.postUpdate(OFF) )		                    
+        end
+
+
+

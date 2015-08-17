@@ -1,0 +1,17 @@
+Strategies {
+    	everyHour : "0 0 * * * ?"
+    	everyDay  : "0 0 0 * * ?"
+	everyMinute : "0 * * * * ?"
+    	default = everyChange
+}
+
+Items {
+    	gLightsAll* : strategy = everyChange, restoreOnStartup
+	gOutletsAll* : strategy = everyChange, restoreOnStartup
+	gClimate* : strategy = everyMinute, restoreOnStartup
+	gTempHouseAvg : strategy = everyMinute, restoreOnStartup
+	gBattery* : strategy = everyChange, restoreOnStartup
+	gVar* : strategy = everyChange, restoreOnStartup
+	gRules* : strategy = everyChange, restoreOnStartup
+	gScenes* : strategy = everyChange, restoreOnStartup
+}

@@ -1,0 +1,90 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.openhab.core.types.*
+import org.joda.time.*
+
+/*----------Памятка
+Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
+*/
+
+/*
+rule "Диммер slider->mode в спальне"
+        when
+                Item LightBedroomMainDimmer changed
+        then
+                if (LightBedroomMainDimmer.state >= 0) {
+                postUpdate(LightBedroomMain, 0)}
+		if (LightBedroomMainDimmer.state == 0) {
+                postUpdate(LightBedroomMain, 2)}
+        end
+*/
+/*
+rule "Диммер switch->slider в спальне"
+        when
+                Item ITM_LIGHT_BEDROOM_MAIN_FULL changed
+        then
+                if (ITM_LIGHT_BEDROOM_MAIN_FULL.state == ON) {
+                sendCommand(ITM_LIGHT_BEDROOM_MAIN_DIMMER, 99)
+                } else {
+                postUpdate(ITM_LIGHT_BEDROOM_MAIN_DIMMER, 0)
+                }
+        end
+*/
+/*
+rule "Основной свет в спальне режимы"
+        when
+                Item LightBedroomMain received command
+        then
+                switch(receivedCommand) {
+                        case 0 : sendCommand(LightBedroomMain, 99)
+                        case 1 : sendCommand(LightBedroomMainLast, ON)
+                        case 2 : sendCommand(LightBedroomMain, 0)
+        end
+*/
+
+
+/*rule "Вечерний свет в спальне в 22"
+        when
+                Time cron "0 0 22 * * ?"
+        then
+                sendCommand(sLightsBedroom, 3) //Перед сном
+                sendNotification("brutevinch@icloud.com", "Время перед сном")
+
+        end
+*/
+
+rule "Просмотр фильма в спальне"
+        when
+                Item PlexBedroomState changed
+        then
+                var Number time
+                if (PlexBedroomState.state=="Playing" && now.getHourOfDay >= 21) {
+               Thread::sleep(2000)
+                sendCommand(LightBedroomMain, OFF)
+                }
+	end
+
+rule "Dimmed Light"
+	when
+		Item LightBedroomMain received command
+	then
+		var Number percent = 0
+		if(LightBedroomMain.state instanceof DecimalType) percent = LightBedroomMain.state as DecimalType 
+			
+		if(receivedCommand==INCREASE) percent = percent + 5
+		if(receivedCommand==DECREASE) percent = percent - 5
+
+		if(percent<0)   percent = 0
+		if(percent>100) percent = 100
+		postUpdate(LightBedroomMain, percent);
+end
+
+rule "Обновление уровня общего света в спальне"
+        when 
+                Item LightBedroomMain changed
+        then
+		var Number percent = 0
+                if(LightBedroomMain.state instanceof DecimalType) percent = LightBedroomMain.state as DecimalType
+		postUpdate(LightBedroomMainLevel, percent)
+	end

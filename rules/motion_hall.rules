@@ -1,0 +1,39 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.openhab.core.types.*
+import org.joda.time.*
+
+var Timer tLightHall
+
+rule "Свет и присутствие в коридоре по движению"
+	when 
+		Item SensorHallMotion received update
+	then
+                var DateTime lightOn = now.plusSeconds(16)
+
+		logInfo("","Start motion rule")
+		if(now.getHourOfDay >= 18 && now.getHourOfDay <= 22) {
+			if(SensorHallMotion.state==ON){		
+				if(sNobodyhome.state==ON){
+				sendCommand(sNobodyhome, OFF)
+				sendCommand(LightHallMain, ON)
+				}
+				if(LightHallMain.state==OFF){
+					if(tLightHall!=null) {
+                        		tLightHall.cancel()
+                        		}
+				sendCommand(LightHallMain, ON)
+				}
+			} else {
+				if(tLightHall!=null) {
+                        	tLightHall.cancel()
+                        	}
+                        	tLightHall = createTimer(lightOn) [|
+                        	sendCommand(LightHallMain, OFF)
+                        	)]
+				}
+		}
+	end
+
+

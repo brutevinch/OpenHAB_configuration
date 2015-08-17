@@ -1,0 +1,86 @@
+rule "Присутствие"
+        when
+                Item ITM_PRESENCE_1 changed or
+                Item ITM_PRESENCE_2 changed
+                logInfo("rule", "Start Presence Rule")
+        then
+                if (ITM_PRESENCE_1.state == OFF) {
+                        if (ITM_PRESENCE_2.state == ON) {
+                        } else {
+                        sendCommand(SCN_NOBODYSHOME, ON)
+                        sendNotification("brutevinch@icloud.com", "В доме никого! ")
+                        }
+                } else {
+                        sendCommand(SCN_NOBODYSHOME, OFF)
+                      sendNotification("brutevinch@icloud.com", "Дом не одинок")
+                        }
+
+                if (ITM_PRESENCE_2.state == OFF) {
+                        if (ITM_PRESENCE_1.state == ON) {
+                        } else {
+                        sendCommand(SCN_NOBODYSHOME, ON)
+                        sendNotification("brutevinch@icloud.com", "В доме никого! ")
+                        }
+                } else {
+                        sendCommand(SCN_NOBODYSHOME, OFF)
+                        sendNotification("brutevinch@icloud.com", "Дом не одинок")
+                        }
+        end
+
+
+//rule "TEST"
+//   when
+//      Item ITM_NIGHTMODE changed from OFF to ON
+// then
+//              if(now.getMinuteOfHour == 25)
+//              sendCommand(GR_LIGHT_LIVING, OFF)
+//              }
+//end
+
+
+//rule "test"
+//      when
+//              Item PlexTVStatus changed
+//      then
+//              if(PlexTVStatus.state=="Playing") {
+//                       sendCommand(ITM_LIGHT_BEDROOM_NIGHTLIGHT_VWARM, ON)
+//              }
+//               if(PlexTVStatus.state=="Paused") {
+//                       sendCommand(ITM_LIGHT_BEDROOM_NIGHTLIGHT_COLD, ON)
+//            }
+//               if(PlexTVStatus.state=="Stopped") {
+//                       sendCommand(ITM_LIGHT_BEDROOM_NIGHTLIGHT_VCOLD, ON)
+//             }
+//end
+
+rule "RTT"
+        when
+                Item test2 received command
+        then
+                                logInfo("thuis-moods", "stored light state and powering off")
+
+                var Number test3
+                test3 = test2.previousState(now)
+                sendCommand(test1, test3)
+        end
+
+
+
+
+
+
+ rule "test"
+  when
+      Item TEST changed
+  then
+      if (TEST.state as DecimalType!=0) {
+          logInfo("ll.rules","Previous State:"+ TEST.previousState)
+          if (TEST.previousState==OFF) {
+              var int LL_state=(TEST.state as DecimalType).intValue
+              TEST.sendCommand(ON)
+              TEST.sendCommand(LL_state)
+              }
+          }
+      else
+          TEST.sendCommand(OFF)
+  end

@@ -1,0 +1,116 @@
+//~~~~~~~~~~~~~~~~~Переменные
+Number vNightLightBedroomHue (gVar)
+Number vNightLightBedroomSaturation (gVar)
+Number vNightLightBedroomBrightness (gVar)
+Number vNightLightBedroomKelvin (gVar)
+	
+//~~~~~~~~~~~~~~~~~Сцены
+Switch sNobodyhome "Никого нет дома" <home> (gScenes)
+Switch sNight "Ночь" (gScenes)
+Number sLightsAll "Сцены" <light> (gScenes)
+Switch sLightsDay "Свет: День" <light> (gScenes)
+Switch sLightsEvening "Свет: Вечер" <light> (gScenes)
+Switch sLightsPostEvening "Свет: Вечер" <light> (gScenes)
+Switch sLightsPreNight "Свет: Поздний вечер" <light> 
+Switch sLightsNight "Света: Ночь" <light>
+Number sLightsBedroom "Сцены" <light> (sLights)
+Switch sLightsBedroomDay "Спальня: День" <light>
+Switch sLightsBedroomEvening "Спальня: Вечер" <light>
+Switch sLightsBedroomPostEvening "Спальня: Вечер" <light> 
+Switch sLightsBedroomPreNight "Спальня: Поздний вечер" <light>
+Switch sLightsBedroomNight "Спальня: Ночь" <light>
+Switch sLightsBedroomMainTriple "Сцена 3 нажатия" {zwave="6:command=SCENE_ACTIVATION,scene=15,state=1"}
+Switch sLightsHallMainHold "Сцена долгое нажатия" {zwave="4:command=SCENE_ACTIVATION,scene=13,state=1"}
+
+//~~~~~~~~~~~~~~~~~Группы
+Group gVar
+Group gSun
+Group gScenes
+Group sLights
+Group gPlex
+Group gMyopenhab
+Group gBattery
+Group gRules
+Group gClimate
+Group gTvBedroom "ТВ в спальне" <tv>
+Group:Number:AVG() gTempHouseAvg "Дома [%.1f °C]" <temperature>
+Group:Switch:OR(ON, OFF) gButtons
+Group:Switch:OR(ON, OFF) gOutletsAll "Все устройства [%d]" <outlet>
+Group:Switch:OR(ON, OFF) gBedroom "Спальня [%d]" <bedroom>
+Group:Switch:OR(ON, OFF) gKitchen "Кухня [%d]" <kitchen>
+Group:Switch:OR(ON, OFF) gToilet "Уборная [%d]" <toilet>
+Group:Switch:OR(ON, OFF) gLightsBedroom "Свет в Спальне [%d]" <light>
+Group:Switch:OR(ON, OFF) gLightsHall "Свет в Коридоре [%d]" <light>
+Group:Switch:OR(ON, OFF) gLightsAll "Весь свет [%d]" <light>
+Group:Switch:OR(ON, OFF) gHall "Коридор [%d]" <hall>
+
+//~~~~~~~~~~~~~~~~~Свет
+Color NightlightBedroomColor "Цвет" <light>
+Switch NightlightBedroomPower  {exec="OFF:/volume1/HomeAutomation/lifxlan/bin/off.py, ON:/volume1/HomeAutomation/lifxlan/bin/on.py"}
+Dimmer NightlightBedroomBrightness "Яркость" <light> (gLightsBedroom, gLightsAll, gBedroom)
+Dimmer NightlightBedroomSaturation "Насыщенность" <light>
+Dimmer NightlightBedroomHue "Тон" <light>
+Dimmer NightlightBedroomKelvin "Температура" <light>
+Dimmer LightBedroomMain "Общий [%d]" <light> (gLightsBedroom, gLightsAll, gBedroom) {zwave="4:restore_last_value=true"}
+Dimmer LightBedroomMainLevel "Общий Уровень [%d %%]" <light> {zwave="4:command=configuration,parameter=40"}
+Switch LightHallMain "Общий [%d]" <light> (gLightsHall, gLightsAll, gHall) {zwave="2:restore_last_value=true"}
+
+//~~~~~~~~~~~~~~~~~Иная техника
+Switch Waterheating "Водонагреватель" <waterheating> (gToilet, gOutlets_All)	
+
+//~~~~~~~~~~~~~~~~~Коридор
+Switch SensorHallMotion "Движение [MAP(motion.map):%s]" <motion> (gHall) {zwave="3:command=SENSOR_BINARY" }
+Number SensorHallBattery "Батарея [%s %%]" <battery> (gHall, gBattery)  {zwave="3:command=BATTERY" }
+
+//~~~~~~~~~~~~~~~~~Кухня
+Number RpiCpuTempKitchen "Температура ЦПУ [%d °C]" {mqtt="<[mosquitto:/kitchen/raspberrypi/cpu_temperature/:state:default]"}
+
+//~~~~~~~~~~~~~~~~~Климат
+Number TempHallMenu "Коридор [%.1f °C]" <temperature> (gHall, gClimate) {zwave="3:command=SENSOR_MULTILEVEL,sensor_type=1"}
+Number TempKitchenMenu "Кухня [%.1f °C]" <temperature> (gKitchen, gClimate) {mqtt="<[mosquitto:/kitchen/raspberrypi/temperature/:state:default]"}
+Number TempBedroomMenu "Спальня [%.1f °C]" <temperature> (gBedroom, gClimate) {mqtt="<[mosquitto:/kitchen/raspberrypi/temperature/:state:default]"}
+Number TempOutMenu "На улице [%d °C]" <temperature> { weather="locationId=home, type=temperature, property=current" }
+Number TempKitchen "Температура [%.1f °C]" <temperature> (gKitchen, gClimate, gTempHouseAvg) {mqtt="<[mosquitto:/kitchen/raspberrypi/temperature/:state:default]"}
+Number TempOut "Температура [%d °C]" <temperature> (gClimate) { weather="locationId=home, type=temperature, property=current" }
+Number TempHall "Температура [%.1f °C]" <temperature> (gHall, gClimate, gTempHouseAvg) {zwave="3:command=SENSOR_MULTILEVEL,sensor_type=1" }
+Number TempBedroom "Температура [%d °C]" <temperature> (gBedroom, gClimate, gTempHouseAvg){mqtt="<[mosquitto:/kitchen/raspberrypi/temperature/:state:default]"}
+Number HumidityOut "Влажность [%d %%]" <humidity>  (gClimate) { weather="locationId=home, type=atmosphere, property=humidity" }
+Number HumidityBedroom "Влажность [%d %%]" <humidity>  {mqtt="<[mosquitto:/kitchen/raspberrypi/humidity/:state:default]"}
+Number HumidityKitchen "Влажность [%.1f %%]" <temperature> (gKitchen, gClimate) {mqtt="<[mosquitto:/kitchen/raspberrypi/humidity/:state:default]"}
+Number TempHallPeriod <period>
+Number TempKitchenPeriod <period>
+Number TempOutPeriod <period>
+
+DateTime DawnStart "Рассвет [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=start"}
+DateTime DawnEnd   "Рассвет к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=end"}
+DateTime DuskStart   "Закат [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDusk,property=start"}
+DateTime DuskEnd   "Закат к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDusk,property=end"}
+
+//~~~~~~~~~~~~~~~~~ТВ
+Switch TvBedroomPower "Выключить" <tv> (gTvBedroom, gButtons) {samsungtv="OFF:Bedroom:KEY_POWEROFF"}
+Switch TvBedroomMute "Выкл звук" <tv> (gTvBedroom, gButtons) {samsungtv="OFF:Bedroom:KEY_MUTE, ON:Bedroom:KEY_MUTE"}
+Number TvBedroomSource <tv>
+Switch TvBedroomSourceButton "Источник" <tv> (gTvBedroom, gButtons) {samsungtv="ON:Bedroom:KEY_SOURCE"}
+Switch TvBedroomTv "TV" <tv> (gTvBedroom, gButtons) {samsungtv="ON:Bedroom:KEY_TV"}
+Switch TvBedroomHdmi "HDMI" <tv> (gTvBedroom, gButtons) {samsungtv="ON:Bedroom:KEY_HDMI"}
+Rollershutter TvBedroomVolume "Громкость" <tv> (gTvBedroom, gButtons) {samsungtv="UP:Bedroom:KEY_VOLUP, DOWN:Bedroom:KEY_VOLDOWN"}
+Rollershutter TvBedroomChannel "Канал" <tv> (gTvBedroom, gButtons) {samsungtv="UP:Bedroom:KEY_CHUP, DOWN:Bedroom:KEY_CHDOWN"}
+Switch TvBedroomInfo "Инфо" <tv> (gTvBedroom, gButtons) {samsungtv="OFF:Bedroom:KEY_INFO, ON:Bedroom:KEY_INFO"}
+
+//~~~~~~~~~~~Телефоны
+Switch iPhone1Find "iPhone Влад" <phone> (gButtons) {exec="ON:php /volume1/HomeAutomation/FindMyiPhone/brutevinch.php"}
+Switch iPhone2Find "iPhone Женя" <phone> (gButtons) {exec="ON:php /volume1/HomeAutomation/FindMyiPhone/evaguseva.php"}
+
+//~~~~~~~~~~~Разное
+Number YandexTraffic "Пробки" {http="<[http://export.yandex.ru/bar/reginfo.xml?ncrnd=1204:600000:XSLT(yandex_probki.xsl)]"}
+
+//~~~~~~~~~~~~PLEX
+Switch PlexUpdate "Обновить" <plex> (gPlex, gButtons) {exec="ON:/volume1/HomeAutomation/Scripts/UpdatePlex.sh"}
+String PlexBedroomState "В спальне [MAP(ru.map):%s]" <plex> (gPlex) {plex="d4fd4f47-0162-4a2e-86dc-74cf059aa5ba_Video#state"}
+String PlexKitchenState "На кухне [MAP(ru.map):%s]" <plex> (gPlex) {plex="a95a3e3d-05ea-47c3-9380-f0059dcdc71f_Video#state"}
+
+//~~~~~~~~~~~АВТОМАТИЗАЦИЯ
+Switch rMotionHall "Сенсор в коридоре" <rules> (gRules) {exec="OFF:mv /opt/HomeAutomation/openhab/configurations/rules/motion_hall.rules /opt/HomeAutomation/openhab/configurations/disabled_rules/, ON:mv /opt/HomeAutomation/openhab/configurations/disabled_rules/motion_hall.rules /opt/HomeAutomation/openhab/configurations/rules"}
+
+Switch test1 "pin6" {mqtt=">[mosquitto:/bedroom/esp12e/gpio/:command:ON:12_ON],>[mosquitto:/bedroom/esp12e/gpio/:command:OFF:12_OFF]"}
+

@@ -1,0 +1,24 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+rule "iPhone Влад"
+  when 
+    Item iPhone1Raw changed
+  then
+    var String json = (iPhone1Raw.state as StringType).toString
+    // {"_type": "location", "lat": "47.5010314", "lon": "8.3444293",
+    //    "tst": "1422616466", "acc": "21.05", "batt": "40"}
+    var String type = transform("JSONPATH", "$._type", json)
+    if (type == "location") {
+      var String lat  = transform("JSONPATH", "$.lat", json)
+      var String lon  = transform("JSONPATH", "$.lon", json)
+      var String acc  = transform("JSONPATH", "$.acc", json)
+      var String batt = transform("JSONPATH", "$.batt", json)
+
+      sendCommand(iPhone1Latitude,  lat)
+      sendCommand(iPhone1Longitude, lon)
+      sendCommand(iPhone1Accuracy,   acc) 
+      sendCommand(iPhone1Battery,  batt)
+    }
+  end

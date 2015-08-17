@@ -1,0 +1,110 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+var HSBType hsbValue
+var int hueSlider
+var int saturationSlider
+var int brightnessSlider
+var int kelvinLIFX 		
+var int hueLIFX
+var int saturationLIFX
+var int brightnessLIFX
+
+/*----------Памятка
+Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
+*/
+
+rule "Ночник Цвет"
+   	when
+        	Item NightlightBedroomColor changed
+   	then
+		var String LIFXvalues
+	        hsbValue = NightlightBedroomColor.state as HSBType
+	        hueLIFX = (((hsbValue.hue.intValue * 65535) / 360).intValue)
+	        saturationLIFX = ((hsbValue.saturation.intValue * 655.35).intValue)
+	        brightnessLIFX = ((hsbValue.brightness.intValue * 655.35).intValue)
+		if (vNightlightBedroomKelvin.state == Uninitialized) {vNightlightBedroomKelvin.postUpdate(3323)}		
+		LIFXvalues = " "+ hueLIFX.toString + " " + saturationLIFX.toString + " " + brightnessLIFX.toString + " " + vNightlightBedroomKelvin.state
+		hueSlider = (((hsbValue.hue.intValue * 100) / 360).intValue)
+		saturationSlider = hsbValue.saturation.intValue
+		brightnessSlider = hsbValue.brightness.intValue
+
+//	               Thread::sleep(1000)
+
+        	executeCommandLine("/volume1/HomeAutomation/lifxlan/bin/color.py" + LIFXvalues);
+
+		if (NightlightBedroomHue.state != hueSlider) {
+		NightlightBedroomHue.postUpdate(hueSlider) }
+
+		if (NightlightBedroomSaturation.state != saturationSlider) {
+                NightlightBedroomSaturation.postUpdate(saturationSlider) }
+
+		if (NightlightBedroomBrightness.state != brightnessSlider) {
+		NightlightBedroomBrightness.postUpdate(brightnessSlider) }
+
+	   	if (vNightlightBedroomHue.state != hueLIFX) {
+                vNightlightBedroomHue.postUpdate(hueLIFX) }
+
+   		if (vNightlightBedroomSaturation.state != saturationLIFX) {
+                vNightlightBedroomSaturation.postUpdate(saturationLIFX) }
+
+   		if (vNightlightBedroomBrightness.state != brightnessLIFX) {
+                vNightlightBedroomBrightness.postUpdate(brightnessLIFX) }
+	end
+
+
+rule "Ночник Белый Температура"
+        when
+                Item NightlightBedroomKelvin changed
+        then
+		var Number kelvinSlider = 0
+		if (NightlightBedroomKelvin.state instanceof DecimalType) 
+		kelvinSlider = NightlightBedroomKelvin.state as DecimalType
+		kelvinLIFX = ((kelvinSlider * (9000 - 3200) / 100) + 3200).intValue
+		executeCommandLine("/volume1/HomeAutomation/lifxlan/bin/color.py "+ vNightlightBedroomHue.state + " 0 " + vNightlightBedroomBrightness.state + " " + kelvinLIFX);
+		if (vNightlightBedroomKelvin.state != kelvinLIFX) {
+                vNightlightBedroomKelvin.postUpdate(kelvinLIFX) }
+		postUpdate(vNightlightBedroomSaturation, 0)
+		if (NightlightBedroomSaturation.state != 0) {
+		postUpdate(NightlightBedroomSaturation, 0)
+        end
+
+rule "Ночник Яркость"
+ 	when
+                Item NightlightBedroomBrightness changed
+        then
+                var Number brightnessSlider = 0
+                if (NightlightBedroomBrightness.state instanceof DecimalType)
+                brightnessSlider = NightlightBedroomBrightness.state as DecimalType
+                brightnessLIFX = ((brightnessSlider * 655.35).intValue)
+                executeCommandLine("/volume1/HomeAutomation/lifxlan/bin/color.py "+ vNightlightBedroomHue.state + " " + vNightlightBedroomSaturation.state + " " + brightnessLIFX + " " + vNightlightBedroomKelvin.state);
+                postUpdate(vNightlightBedroomBrightness, brightnessLIFX)
+	end
+
+rule "Ночник Насыщеность"
+        when
+                Item NightlightBedroomSaturation changed
+        then
+                var Number saturationSlider = 0
+                if (NightlightBedroomSaturation.state instanceof DecimalType)
+                saturationSlider = NightlightBedroomSaturation.state as DecimalType
+                saturationLIFX = ((saturationSlider * 655.35).intValue)
+                executeCommandLine("/volume1/HomeAutomation/lifxlan/bin/color.py "+ vNightlightBedroomHue.state + " " + saturationLIFX + " " + vNightlightBedroomBrightness.state + " " + vNightlightBedroomKelvin.state);
+                postUpdate(vNightlightBedroomSaturation, saturationLIFX)
+	end
+
+rule "Ночник Тон"
+        when
+                Item NightlightBedroomHue changed
+        then
+                var Number hueSlider = 0
+                if (NightlightBedroomHue.state instanceof DecimalType)                
+                hueSlider = NightlightBedroomHue.state as DecimalType
+                hueLIFX = ((hueSlider * 655.35).intValue)
+                executeCommandLine("/volume1/HomeAutomation/lifxlan/bin/color.py "+ hueLIFX + " " + vNightlightBedroomSaturation.state + " " + vNightlightBedroomBrightness.state + " " + vNightlightBedroomKelvin.state);
+                postUpdate(vNightlightBedroomHue, hueLIFX)
+
+	end
+
+
