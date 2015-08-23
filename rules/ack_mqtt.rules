@@ -1,0 +1,28 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.openhab.core.types.*
+import org.joda.time.*
+
+
+rule "ack state heater102"
+	when 
+		Item HeaterStateAck received command
+	then
+		if(receivedCommand==ON) {
+			if(HeaterState.state==OFF) {               	
+			postUpdate(HeaterState, ON) }
+		} else {
+			if(HeaterState.state==ON) {
+                        postUpdate(HeaterState, OFF) }                
+		}  
+	end
+
+rule "ack temperature heater102"
+        when
+                Item HeaterTempAck received command
+        then
+		postUpdate(HeaterTemp, HeaterTempAck.state)
+        end
+
+

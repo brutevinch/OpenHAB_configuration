@@ -1,0 +1,52 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+import org.openhab.core.types.*
+import org.joda.time.*
+
+var Timer tLightHall
+
+rule "Свдвижению"
+	when 
+		Item SensorHallMotion received update
+	then
+               var DateTime lightOn = now.plusSeconds(16)
+
+		if (sNobodyhome.state==ON) {
+                sendNotification("brutevinch@icloud.com", "Обнаружено движение!")
+                sendCommand(sNobodyhome, OFF)
+		sendCommand(LightHallMain, ON)
+                     if(tLightHall!=null) {
+                     tLightHall.cancel()
+                     }
+
+		}
+		
+		if(now.getHourOfDay >= 18 && now.getHourOfDay <= 22) {
+			if(SensorHallMotion.state==ON){		
+				sendCommand(LightHallMain, ON)
+					if(tLightHall!=null) {
+                                        tLightHall.cancel()
+                                        }
+				}
+				
+				if(LightHallMain.state==OFF){
+					if(tLightHall!=null) {
+                        		tLightHall.cancel()
+                        		}
+				sendCommand(LightHallMain, ON)
+				}
+			} else {
+				if(tLightHall!=null) {
+                        	tLightHall.cancel()
+                        	}
+                        	tLightHall = createTimer(lightOn) [|
+                        		if(LightHallMain.state==ON) {    
+					sendCommand(LightHallMain, OFF) }
+                        	)]
+				}
+		}
+
+	end
+
+

@@ -1,3 +1,4 @@
 sitemap test label="Тестовый полигон" {
 Switch item=test1
+Slider item=test2
 }

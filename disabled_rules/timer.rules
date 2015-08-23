@@ -1,0 +1,72 @@
+import org.openhab.core.types.*
+import org.joda.time.*
+import org.openhab.model.script.actions.Timer
+
+var Timer tLightsDay 		//~09часов
+var Timer tLightsEvening	//~20часов
+var Timer tLightsPostEvening	//~22часа
+var Timer tLightsPreNight	//~24часа
+var Timer tLightsNight
+
+/*
+rule "Тамймеры начиная с восхода"
+	when 
+                Time cron "0 0 3 * * ?" or
+		Item DuskEnd changed or 
+		Item DawnStart changed
+	then
+		var DateTime dayend = parse(""+ DuskEnd.state)
+		var DateTime daystart = parse(""+ DawnStart.state)
+		var DateTime day = duskend.plusHours(13)
+		var DateTime evening = duskend.minusHours(3)
+		var DateTime postevening = duskend.minusHours(3)
+		var DateTime prenight = duskend.minusHours(3)
+		var DateTime night = duskend.minusHours(3)
+
+    		if(tLightsDay!=null) {
+    		logInfo("*** TIMER ***","Timer tLightsDay cancelled") 
+    		tLightsDay.cancel()
+    		}
+
+		if(tLightsEvening!=null) {
+                logInfo("*** TIMER ***","Timer tLightsEvening cancelled")
+                tLightsEvening.cancel()
+                }
+		
+		if(tLightsPreNight!=null) {
+                logInfo("*** TIMER ***","Timer tLightsPreNightcancelled")
+                tLightsPreNight.cancel()
+                }
+		
+		if(tLightsNight!=null) {
+                logInfo("*** TIMER ***","Timer tLightsNight cancelled")
+                tLightsNight.cancel()
+                }
+
+
+		logInfo("*** TIMER ***","Timer tLightsDay created") 
+    		tLightsDay = createTimer(day) [|
+    		logInfo("*** TIMER ***","Timer tLightsDay executed") 
+			sendCommand(sLightsAll, 0)
+		)]
+	
+		logInfo("*** TIMER ***","Timer tLightsEvening created")
+                tLightsEvening = createTimer(evening) [|
+                logInfo("*** TIMER ***","Timer tLightsEvening executed")
+                        sendCommand(sLightsAll, 1)
+                )]
+
+		logInfo("*** TIMER ***","Timer tLightsPreMight created")
+                tLightsPreNight = createTimer(prenight) [|
+                logInfo("*** TIMER ***","Timer tLightsPreNight executed")
+                        sendCommand(sLightsAll, 2)
+                )]
+		
+		logInfo("*** TIMER ***","Timer tLightsNight created")
+                tLightsNight = createTimer(evening) [|
+                logInfo("*** TIMER ***","Timer tLightsNight executed")
+                        sendCommand(sLightsAll, 3)
+                )]
+
+	end
+*/

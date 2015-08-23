@@ -1,0 +1,17 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+/*----------Памятка
+Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
+*/
+
+rule "Погода и пробки утром"
+	when
+		Time cron "0 15 8 ? * MON-FRI"
+	then
+		logInfo("Rules", "*** *** *** Погода и пробки утром *** *** ***")
+            	var Number vtemp_scale = TempOut.state as DecimalType
+		var int vtemp_out = ((vtemp_scale)).intValue
+		sendNotification("brutevinch@icloud.com", "Температура на улице: "+ vtemp_out + "°C Яндекс Пробки: " + YandexTraffic.state)
+	end

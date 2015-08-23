@@ -1,7 +1,7 @@
 sitemap default label="Наш Дом"
 {
 	Frame label="Комнаты" {
-		Group item=TempBedroomMenu icon="bedroom" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
+		Group item=gBedroom icon="bedroom" {
    			Slider item=LightBedroomMain
 			Text item=LightBedroomMainLevel {
 			Slider item=LightBedroomMainLevel 
@@ -14,7 +14,6 @@ sitemap default label="Наш Дом"
                                 Slider item=NightlightBedroomKelvin
                                 }
                         Selection item=sLightsBedroom mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"]
-                        Text item=TempBedroom valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"]
 		}
 		Group item=gToilet  {
 			Switch item=Waterheating
@@ -49,9 +48,6 @@ sitemap default label="Наш Дом"
 		}
 
 		Text item=gTempHouseAvg valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
-			Text item=TempBedroomMenu valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"] {
-                        	Text item=TempBedroom valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"]
-				}
 			Text item=TempHallMenu valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]  {
                         	Text item=TempHall valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
                         	Switch item=TempHallPeriod label="Период" mappings=[0="Неделя", 1="День", 2="Месяц"]
@@ -113,5 +109,9 @@ sitemap default label="Наш Дом"
 		Text label="Батарейки" icon="battery" {
 		Text item=SensorHallBattery label="Сенсор Коридор [%s %%]" icon="hall"
 		}
+Switch item=HeaterState
+Setpoint item=HeaterTemp minValue=20 maxValue=26 step=0.5
+
 	}
+
 }

@@ -14,7 +14,7 @@
         </appender>
 
         <!-- Change DEBUG->TRACE for even more detailed logging -->
-        <logger name="org.openhab.binding.zwave" level="DEBUG" additivity="false">
+        <logger name="org.openhab.binding.zwave" level="INFO" additivity="false">
         <appender-ref ref="ZWAVEFILE" />
         </logger>
 
