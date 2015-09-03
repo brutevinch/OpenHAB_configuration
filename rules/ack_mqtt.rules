@@ -18,11 +18,11 @@ rule "ack state heater102"
 		}  
 	end
 
-rule "ack temperature heater102"
+/*rule "ack temperature heater102"
         when
                 Item HeaterTempAck received command
         then
 		postUpdate(HeaterTemp, HeaterTempAck.state)
         end
-
+*/
 

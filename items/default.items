@@ -8,6 +8,7 @@ Number vNightLightBedroomKelvin (gVar)
 Switch sNobodyhome "Никого нет дома" <home> (gScenes)
 Switch sNight "Ночь" (gScenes)
 Number sLightsAll "Сцены" <light> (gScenes)
+Number selHeater "Лимит [%.1f °C]" <heater> (gScenes)
 Switch sLightsDay "Свет: День" <light> (gScenes)
 Switch sLightsEvening "Свет: Вечер" <light> (gScenes)
 Switch sLightsPostEvening "Свет: Вечер" <light> (gScenes)
@@ -47,6 +48,7 @@ Group:Switch:OR(ON, OFF) gHall "Коридор [%d]" <hall>
 //~~~~~~~~~~~~~~~~~MQTT ack
 Switch HeaterStateAck {mqtt="<[mosquitto:/ack/house/other/climate/heater102/state:command:default]"}
 Number HeaterTempAck {mqtt="<[mosquitto:/ack/house/other/climate/heater102/temperature:command:default]"}
+String HeaterModeAck "Режим [MAP(heater.map):%s]" <heater> {mqtt="<[mosquitto:/ack/house/other/climate/heater102/mode:command:default]"}
 
 //~~~~~~~~~~~~~~~~~Свет
 Color NightlightBedroomColor "Цвет" <light>
@@ -57,12 +59,13 @@ Dimmer NightlightBedroomHue "Тон" <light>
 Dimmer NightlightBedroomKelvin "Температура" <light>
 Dimmer LightBedroomMain "Общий [%d]" <light> (gLightsBedroom, gLightsAll, gBedroom) {zwave="4:restore_last_value=true"}
 Dimmer LightBedroomMainLevel "Общий Уровень [%d %%]" <light> {zwave="4:command=configuration,parameter=40"}
-Switch LightHallMain "Общий [%d]" <light> (gLightsHall, gLightsAll, gHall) {zwave="2:restore_last_value=true"}
+Switch LightHallMain "Общий [%d]" <light> (gLightsHall, gHall) {zwave="2:restore_last_value=true"}
 
 //~~~~~~~~~~~~~~~~~Иная техника
 Switch Waterheating "Водонагреватель" <waterheating> (gToilet, gOutletsAll)
-Number HeaterTemp "Обогреватель" <heater> (gOutletsAll) {mqtt=">[mosquitto:/command/house/other/climate/heater102/temperature:command:*:default]"}
-Switch HeaterState "Обогреватель" <heater> (gOutletsAll) {mqtt=">[mosquitto:/command/house/other/climate/heater102/state:command:*:default]"}
+Number HeaterTemp "Лимит" <heater> {mqtt=">[mosquitto:/command/house/other/climate/heater102/temperature:command:*:default]"}
+Switch HeaterState "Состояние" <heater> (gOutletsAll) {mqtt=">[mosquitto:/command/house/other/climate/heater102/state:command:*:default]"}
+
 //~~~~~~~~~~~~~~~~~Коридор
 Switch SensorHallMotion "Движение [MAP(motion.map):%s]" <motion> (gHall) {zwave="5:command=SENSOR_BINARY" }
 Number SensorHallBattery "Батарея [%s %%]" <battery> (gHall, gBattery)  {zwave="5:command=BATTERY" }
@@ -87,9 +90,9 @@ Number TempKitchenPeriod <period>
 Number TempOutPeriod <period>
 
 DateTime DawnStart "Рассвет [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=start"}
-DateTime DawnEnd   "Рассвет к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=end"}
-DateTime DuskStart   "Закат [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDusk,property=start"}
-DateTime DuskEnd   "Закат к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDusk,property=end"}
+DateTime DawnEnd "Рассвет к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=end"}
+DateTime DuskStart "Закат [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDusk,property=start"}
+DateTime DuskEnd "Закат к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDusk,property=end"}
 
 //~~~~~~~~~~~~~~~~~ТВ
 Switch TvBedroomPower "Выключить" <tv> (gTvBedroom, gButtons) {samsungtv="OFF:Bedroom:KEY_POWEROFF"}

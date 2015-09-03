@@ -1,64 +1,65 @@
-
 import org.openhab.core.library.types.*
 import org.openhab.core.persistence.*
 import org.openhab.model.script.actions.*
+import org.openhab.core.types.*
+import org.joda.time.*
 
 /*----------Памятка
 Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
 */
 
 rule "Сцены света в доме"
-        when
-                Item sLightsAll received command
-        then
-                switch(receivedCommand) {
-                        case 0 : sendCommand(sLights, 0)
+	when
+		Item sLightsAll received command
+    then
+        switch(receivedCommand) {
+    		case 0 : sendCommand(sLights, 0)
 			case 1 : sendCommand(sLights, 1)       
 			case 2 : sendCommand(sLights, 2)
 			case 3 : sendCommand(sLights, 3)	
-      			}
-        end
+      	}
+    end
 
 rule "Сцены света в спальне"
-        when
-                Item sLightsBedroom received command
-        then
-                switch(receivedCommand) {
-                        case 0 : if(LightBedroomMain.state>0) {
-				sendCommand(LightBedroomMain, 100)
+    when
+		Item sLightsBedroom received command
+    then
+        switch(receivedCommand) {
+    		case 0 : if(LightBedroomMain.state>0) {
+					sendCommand(LightBedroomMain, 100)
 				} else {
-				sendCommand(LightBedroomMainLevel, 100)}
+					sendCommand(LightBedroomMainLevel, 100)}
 			
 			case 1 : if(LightBedroomMain.state>0) {
-                                sendCommand(LightBedroomMain, 60)
-                                } else {
-                                sendCommand(LightBedroomMainLevel, 60)}
+                    sendCommand(LightBedroomMain, 60)
+                 } else {
+				   	sendCommand(LightBedroomMainLevel, 60)}
 	 
-                        case 2 :  if(LightBedroomMain.state>0) {
-                                sendCommand(LightBedroomMain, 22)
-                                } else {
-                                sendCommand(LightBedroomMainLevel, 22)}
+            case 2 :  if(LightBedroomMain.state>0) {
+         	       	sendCommand(LightBedroomMain, 22)
+                 } else {
+                   	sendCommand(LightBedroomMainLevel, 22)}
 
-                        case 3 :  if(LightBedroomMain.state>0) {
-                                sendCommand(LightBedroomMain, 3)
-                                } else {
-                                sendCommand(LightBedroomMainLevel, 3)}
-                        }
-        end
+            case 3 :  if(LightBedroomMain.state>0) {
+           	        sendCommand(LightBedroomMain, 3)
+                 } else {
+               		sendCommand(LightBedroomMainLevel, 3)}
+		}
+	end
 
 rule "Никого нет дома"
-        when
-                Item sNobodyhome received command
-        then
-                if(receivedCommand==ON) {
-                sendCommand(gLightsAll, OFF)
-                sendCommand(gOutletsAll, OFF) }
-        end
-//*
-rule "Никого дома через выключатель"
+	when
+        Item sNobodyhome received command
+    then
+        if(receivedCommand==ON) {
+			sendCommand(gLightsAll, OFF)
+        	sendCommand(gOutletsAll, OFF)
+		}
+	end
+
+rule "Никого нет дома через выключатель"
 	when
 		Item sLightsHallMainHold received update
 	then 
 		sendCommand(sNobodyhome, ON)
 	end
-*//
