@@ -1,7 +1,7 @@
 sitemap default label="Наш Дом"
 {
 	Frame label="Комнаты" {
-		Group item=gBedroom icon="bedroom" {
+		Text item=TempBedroomMenu icon="bedroom" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
    			Slider item=LightBedroomMain
 			Text item=LightBedroomMainLevel {
 			Slider item=LightBedroomMainLevel 
@@ -71,6 +71,15 @@ sitemap default label="Наш Дом"
                         	Chart item=TempKitchen period=D refresh=30000 visibility=[TempKitchenPeriod==1]
                         	Chart item=TempKitchen period=M refresh=30000 visibility=[TempKitchenPeriod==2]
                 		}
+			Text item=TempBedroomMenu valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]  {
+                                Text item=TempBedroom valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
+                                Text item=HumidityBedroom
+                                Switch item=TempBedroomPeriod label="Период" mappings=[0="Неделя", 1="День", 2="Месяц"]
+                                Chart item=TempBedroom period=W refresh=30000 visibility=[TempBedroomPeriod==0, TempBedroomPeriod=="Uninitialized"]
+                                Chart item=TempBedroom period=D refresh=30000 visibility=[TempBedroomPeriod==1]
+                                Chart item=TempBedroom period=M refresh=30000 visibility=[TempBedroomPeriod==2]
+                                }
+
 		}
 	}	
 	Frame label="Медиа"  {
@@ -89,7 +98,7 @@ sitemap default label="Наш Дом"
 			Switch item=TvBedroomInfo mappings=[ON="Инфо                    "] 			
 		}		
 	}	
-*/	Frame label="Ресурсы"  {
+	Frame label="Ресурсы"  {
 		Text label="Телефоны" icon="phone" {
 			Text label="Влад" icon="phone" {
 			Switch item=iPhone1Find mappings=[ON="Найти               "] 		
@@ -109,7 +118,7 @@ sitemap default label="Наш Дом"
 				Image url="http://localhost/graphs/graphs/graph_29_1.png" 				
 			}			
 		}		
-*/	}	
+	}	
 
 	Frame label="Система" {
 		Text label="Правила" icon="rules" {

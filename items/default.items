@@ -76,18 +76,22 @@ Number RpiCpuTempKitchen "Температура ЦПУ [%d °C]" {mqtt="<[mosqu
 //~~~~~~~~~~~~~~~~~Климат
 Number TempHallMenu "Коридор [%.1f °C]" <temperature> (gHall, gClimate) {zwave="5:command=SENSOR_MULTILEVEL,sensor_type=1"}
 Number TempKitchenMenu "Кухня [%.1f °C]" <temperature> (gKitchen, gClimate) {mqtt="<[mosquitto:/message/house/kitchen/climate/rasplex101/temperature:state:default]"}
-//Number TempBedroomMenu "Спальня [%.1f °C]" <temperature> (gBedroom, gClimate)
 Number TempOutMenu "На улице [%d °C]" <temperature> { weather="locationId=home, type=temperature, property=current" }
 Number TempKitchen "Температура [%.1f °C]" <temperature> (gKitchen, gClimate, gTempHouseAvg) {mqtt="<[mosquitto:/message/house/kitchen/climate/rasplex101/temperature:state:default]"}
 Number TempOut "Температура [%d °C]" <temperature> (gClimate) { weather="locationId=home, type=temperature, property=current" }
 Number TempHall "Температура [%.1f °C]" <temperature> (gHall, gClimate, gTempHouseAvg) {zwave="5:command=SENSOR_MULTILEVEL,sensor_type=1" }
-//Number TempBedroom "Температура [%d °C]" <temperature> (gBedroom, gClimate, gTempHouseAvg)
 Number HumidityOut "Влажность [%d %%]" <humidity>  (gClimate) { weather="locationId=home, type=atmosphere, property=humidity" }
-//Number HumidityBedroom "Влажность [%d %%]" <humidity> 
 Number HumidityKitchen "Влажность [%.1f %%]" <temperature> (gKitchen, gClimate) {mqtt="<[mosquitto:/message/house/kitchen/climate/rasplex101/humidity:state:default]"}
+
 Number TempHallPeriod <period>
 Number TempKitchenPeriod <period>
 Number TempOutPeriod <period>
+Number TempBedroomPeriod <period>
+
+Number TempBedroomMenu "Спальня [%.1f °C]" <temperature> (gBedroom, gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/temperature:state:default]"}
+Number TempBedroom "Температура [%.1f °C]" <temperature> (gBedroom, gClimate, gTempHouseAvg) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/temperature:state:default]"}
+Number HumidityBedroom "Влажность [%.1f %%]" <temperature> (gBedroom, gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/humidity:state:default]"}
+
 
 DateTime DawnStart "Рассвет [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=start"}
 DateTime DawnEnd "Рассвет к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=end"}
