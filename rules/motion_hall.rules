@@ -5,41 +5,39 @@ import org.openhab.core.types.*
 import org.joda.time.*
 
 var Timer tLightHall
-var boolean from_state = false
+var boolean force = false
 
 rule "Свет в коридоре по датчику движения"
-	when 
-		Item SensorHallMotion received update
-	then
+	when
+    		Item SensorHallMotion received update
+    	then
 		var DateTime light_to_off = now.plusSeconds(17)
-
-		if(now.getHourOfDay >= 7 && now.getHourOfDay <= 10 || now.getHourOfDay >= 18 && now.getHourOfDay <= 22 || sNobodyhome.state == ON || from_state == true) {
-			
-			if(SensorHallMotion.state == ON){		
-				sendCommand(LightHallMain, ON)
-			   	if(tLightHall!=null) {
-        		        	tLightHall.cancel() 
+        	if(now.getHourOfDay >= 8 && now.getHourOfDay < 10 || now.getHourOfDay >= 18 && now.getHourOfDay < 22 || sNobodyhome.state == ON && now.getHourOfDay < 22 || force == true) {
+			if(SensorHallMotion.state == ON) {
+				force = true
+                		if(LightHallMain.state == OFF) {
+                    			sendCommand(LightHallMain, ON)
 				}
-	
-				if(sNobodyhome.state == ON) {
-					from_state = true
-					sendNotification("brutevinch@icloud.com", "Обнаружено движение!")
-					sendCommand(sNobodyhome, OFF)
-				}
-				
-			} else {
-			
+	      
 				if(tLightHall!=null) {
-            	tLightHall.cancel()
-            	}
-            
+                  			tLightHall.cancel()
+                    		}
+
+               			if(sNobodyhome.state == ON) {
+       			  		sendNotification("brutevinch@icloud.com", "Обнаружено движение!")
+                   			sendCommand(sNobodyhome, OFF)
+              			}
+			} else {
+              			force = false
+                    		if(tLightHall!=null) {
+					tLightHall.cancel()
+                		}
+				
 				if(LightHallMain.state == ON) {
-					tLightHall = createTimer(light_to_off) [|
-	            		if(LightHallMain.state == ON) {    
-						sendCommand(LightHallMain, OFF)
-						from_state = false 
-						}
-					]
-				}
-			}				
+                    			tLightHall = createTimer(light_to_off) [|
+                    			if(LightHallMain.state == ON) {
+                        			sendCommand(LightHallMain, OFF)
+                    			}]
+                    		}
+			}
 	end

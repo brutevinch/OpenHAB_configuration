@@ -27,6 +27,12 @@ sitemap default label="Наш Дом"
 			Text item=TempHall valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
 			Text item=SensorHallMotion
 		}
+
+		Text item=TempLivingMenu icon="living" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
+                        Slider item=LightLivingMain
+                        Text item=TempLiving valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
+                }
+
 	}	
 	Frame label="Сцены"  {
 		Selection item=sLightsAll label="В доме" mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"] 		
@@ -46,7 +52,8 @@ sitemap default label="Наш Дом"
 
 		Text item=TempOutMenu valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"]  {
 			Text item=TempOut valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"] 			
-			Text item=HumidityOut			
+			Text item=HumidityOut	
+			Text item=PressureOut		
 			Text item=DawnStart		
 			Text item=DuskStart  			
 			Switch item=TempOutPeriod label="Период" mappings=[0="Неделя", 1="День", 2="Месяц"]
@@ -70,7 +77,7 @@ sitemap default label="Наш Дом"
                         	Chart item=TempKitchen period=W refresh=30000 visibility=[TempKitchenPeriod==0, TempKitchenPeriod=="Uninitialized"]
                         	Chart item=TempKitchen period=D refresh=30000 visibility=[TempKitchenPeriod==1]
                         	Chart item=TempKitchen period=M refresh=30000 visibility=[TempKitchenPeriod==2]
-                		}
+ 	              		}
 			Text item=TempBedroomMenu valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]  {
                                 Text item=TempBedroom valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
                                 Text item=HumidityBedroom
@@ -85,8 +92,8 @@ sitemap default label="Наш Дом"
 	Frame label="Медиа"  {
 		Text label="Plex" icon="plex" {
 			Switch item=PlexUpdate  mappings=[ON="Обновить                 "]
-			Text item=PlexBedroomState
-			Text item=PlexKitchenState
+//			Text item=PlexBedroomState
+//			Text item=PlexKitchenState
 			}
 		Group item=gTvBedroom  {
 			Switch item=TvBedroomPower mappings=[OFF="Выключить           "] 			
@@ -107,17 +114,6 @@ sitemap default label="Наш Дом"
 			Text label="Женя" icon="phone" {
 			Switch item=iPhone2Find mappings=[ON="Найти               "] 	
 			}}	
-
-		Text label="Графики" icon="graph"  {
-			Text label="Airport" icon="graph"  {
-				Image url="http://localhost/graphs/graphs/graph_23_1.png" 				
-				Image url="http://localhost/graphs/graphs/graph_24_1.png" 				
-			}			
-			Text label="Synology" icon="graph"  {
-				Image url="http://localhost/graphs/graphs/graph_26_1.png" 				
-				Image url="http://localhost/graphs/graphs/graph_29_1.png" 				
-			}			
-		}		
 	}	
 
 	Frame label="Система" {
@@ -128,5 +124,4 @@ sitemap default label="Наш Дом"
 		Text item=SensorHallBattery label="Сенсор Коридор [%s %%]" icon="hall"
 		}
 	}
-
 }

@@ -52,8 +52,8 @@ rule "Никого нет дома"
         Item sNobodyhome received command
     then
         if(receivedCommand==ON) {
-		sendCommand(gLightsAll, OFF)
-        	sendCommand(gOutletsAll, OFF)
+//		sendCommand(gLightsAll, OFF)
+//        	sendCommand(gOutletsAll, OFF)
 		}
 	end
 
