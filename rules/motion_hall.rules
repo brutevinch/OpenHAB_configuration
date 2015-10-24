@@ -15,8 +15,8 @@ rule "Свет в коридоре по датчику движения"
         	if(now.getHourOfDay >= 8 && now.getHourOfDay < 10 || now.getHourOfDay >= 18 && now.getHourOfDay < 22 || sNobodyhome.state == ON && now.getHourOfDay < 22 || force == true) {
 			if(SensorHallMotion.state == ON) {
 				force = true
-                		if(LightHallMain.state == OFF) {
-                    			sendCommand(LightHallMain, ON)
+                		if(LightHallMainSwitch.state == OFF) {
+                    			sendCommand(LightHallMainSwitch, ON)
 				}
 	      
 				if(tLightHall!=null) {
@@ -33,10 +33,10 @@ rule "Свет в коридоре по датчику движения"
 					tLightHall.cancel()
                 		}
 				
-				if(LightHallMain.state == ON) {
+				if(LightHallMainSwitch.state == ON) {
                     			tLightHall = createTimer(light_to_off) [|
-                    			if(LightHallMain.state == ON) {
-                        			sendCommand(LightHallMain, OFF)
+                    			if(LightHallMainSwitch.state == ON) {
+                        			sendCommand(LightHallMainSwitch, OFF)
                     			}]
                     		}
 			}

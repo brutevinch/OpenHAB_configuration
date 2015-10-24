@@ -4,6 +4,12 @@ import org.openhab.model.script.actions.*
 import org.openhab.core.types.*
 import org.joda.time.*
 
+//Для сцен света
+var int day = 100
+var int evening = 60
+var int postEvening = 22
+var int night = 1
+
 /*----------Памятка
 Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
 */
@@ -11,49 +17,85 @@ Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
 rule "Сцены света в доме"
 	when
 		Item sLightsAll received command
-    then
-        switch(receivedCommand) {
-    		case 0 : sendCommand(sLights, 0)
+    	then
+        	switch(receivedCommand) {
+    			case 0 : sendCommand(sLights, 0)
 			case 1 : sendCommand(sLights, 1)       
 			case 2 : sendCommand(sLights, 2)
 			case 3 : sendCommand(sLights, 3)	
-      	}
-    end
+      		}
+    	end
 
-rule "Сцены света в спальне"
-    when
-		Item sLightsBedroom received command
-    then
-        switch(receivedCommand) {
-    		case 0 : if(LightBedroomMain.state>0) {
-					sendCommand(LightBedroomMain, 100)
-				} else {
-					sendCommand(LightBedroomMainLevel, 100)}
-			
-			case 1 : if(LightBedroomMain.state>0) {
-                    sendCommand(LightBedroomMain, 60)
-                 } else {
-				   	sendCommand(LightBedroomMainLevel, 60)}
-	 
-            case 2 :  if(LightBedroomMain.state>0) {
-         	       	sendCommand(LightBedroomMain, 22)
-                 } else {
-                   	sendCommand(LightBedroomMainLevel, 22)}
-
-            case 3 :  if(LightBedroomMain.state>0) {
-           	        sendCommand(LightBedroomMain, 3)
-                 } else {
-               		sendCommand(LightBedroomMainLevel, 3)}
+rule "Сцены света в зале"
+	when
+                Item sLightsLiving received command
+    	then
+	  	if (LightLivingMainDimmer.state > 0){
+	        	switch(receivedCommand) {
+			case 0 : sendCommand(LightLivingMainDimmer, day)
+			case 1 : sendCommand(LightLivingMainDimmer, evening)
+                       	case 2 : sendCommand(LightLivingMainDimmer, postEvening)
+                       	case 3 : sendCommand(LightLivingMainDimmer, night)
+			}
+ 		} else {
+			switch(receivedCommand) { 
+  	 		case 0 : sendCommand(LightLivingMainLevel, day)
+                        case 1 : sendCommand(LightLivingMainLevel, evening)
+                        case 2 : sendCommand(LightLivingMainLevel, postEvening)
+                        case 3 : sendCommand(LightLivingMainLevel, night)
+			}
 		}
 	end
+
+rule "Сцены света в спальне"
+        when
+                Item sLightsBedroom received command
+        then
+                if (LightBedroomMainDimmer.state > 0){
+                        switch(receivedCommand) {
+                        case 0 : sendCommand(LightBedroomMainDimmer, day)
+                        case 1 : sendCommand(LightBedroomMainDimmer, evening)
+                        case 2 : sendCommand(LightBedroomMainDimmer, postEvening)
+                        case 3 : sendCommand(LightBedroomMainDimmer, night)
+                        }
+                } else {
+                        switch(receivedCommand) {
+                        case 0 : sendCommand(LightBedroomMainLevel, day)
+                        case 1 : sendCommand(LightBedroomMainLevel, evening)
+                        case 2 : sendCommand(LightBedroomMainLevel, postEvening)
+                        case 3 : sendCommand(LightBedroomMainLevel, night)
+                        }
+                }
+        end
+
+rule "Сцены света в коридоре"
+        when
+                Item sLightsHall received command
+        then
+                if (LightHallMainDimmer.state > 0){
+                        switch(receivedCommand) {
+                        case 0 : sendCommand(LightHallMainDimmer, day)
+                        case 1 : sendCommand(LightHallMainDimmer, evening)
+                        case 2 : sendCommand(LightHallMainDimmer, postEvening)
+                        case 3 : sendCommand(LightHallMainDimmer, night)
+                        }
+                } else {
+                        switch(receivedCommand) {
+                        case 0 : sendCommand(LightHallMainLevel, day)
+                        case 1 : sendCommand(LightHallMainLevel, evening)
+                        case 2 : sendCommand(LightHallMainLevel, postEvening)
+                        case 3 : sendCommand(LightHallMainLevel, night)
+                        }
+                }
+        end
 
 rule "Никого нет дома"
 	when
         Item sNobodyhome received command
     then
         if(receivedCommand==ON) {
-//		sendCommand(gLightsAll, OFF)
-//        	sendCommand(gOutletsAll, OFF)
+		sendCommand(gLightsAll, OFF)
+        	sendCommand(gOutletsAll, OFF)
 		}
 	end
 

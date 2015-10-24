@@ -15,6 +15,8 @@ Switch sLightsPostEvening "Свет: Вечер" <light> (gScenes)
 Switch sLightsPreNight "Свет: Поздний вечер" <light> 
 Switch sLightsNight "Света: Ночь" <light>
 Number sLightsBedroom "Сцены" <light> (sLights)
+Number sLightsLiving "Сцены" <light> (sLights)
+Number sLightsHall "Сцены" <light> (sLights)
 Switch sLightsBedroomDay "Спальня: День" <light>
 Switch sLightsBedroomEvening "Спальня: Вечер" <light>
 Switch sLightsBedroomPostEvening "Спальня: Вечер" <light> 
@@ -49,8 +51,9 @@ Group:Switch:OR(ON, OFF) gLightsAll "Весь свет [%d]" <light>
 Group:Switch:OR(ON, OFF) gHall "Коридор [%d]" <hall>
 
 //~~~~~~~~~~~~~~~~~Спальня
-Dimmer LightBedroomMain "Общий [%d]" <light> (gLightsBedroom, gLightsAll, gBedroom) {zwave="4:restore_last_value=true"}
-Dimmer LightBedroomMainLevel "Общий Уровень [%d %%]" <light> {zwave="4:command=configuration,parameter=40"}
+Switch LightBedroomMainSwitch "Вкл/Выкл [%d]" <light> (gLightsBedroom, gLightsAll, gBedroom) {zwave="4:restore_last_value=true"}
+Dimmer LightBedroomMainDimmer "Диммер [%d]" <light> (gLightsBedroom, gLightsAll, gBedroom) {zwave="4:restore_last_value=true"}
+Dimmer LightBedroomMainLevel "Уровень [%d %%]" <light> {zwave="4:command=configuration,parameter=40"}
 
 Color NightlightBedroomColor "Цвет" <light>
 Switch NightlightBedroomPower  {exec="OFF:/volume1/HomeAutomation/lifxlan/bin/off.py, ON:/volume1/HomeAutomation/lifxlan/bin/on.py"}
@@ -77,15 +80,18 @@ Switch TvBedroomInfo "Инфо" <tv> (gTvBedroom, gButtons) {samsungtv="OFF:Bedr
 //String PlexBedroomState "В спальне [MAP(ru.map):%s]" <plex> (gPlex) {plex="d4fd4f47-0162-4a2e-86dc-74cf059aa5ba_Video#state"}
 
 //~~~~~~~~~~~~~~~~~Зал
-Dimmer LightLivingMain "Общий [%d]" <light> (gLightsLiving, gLiving) {zwave="6:restore_last_value=true"}
-Dimmer LightLivingMainLevel "Общий Уровень [%d %%]" <light> {zwave="6:command=configuration,parameter=40"}
+Switch LightLivingMainSwitch "Вкл/Вык" <light> (gLightsLiving, gLiving) {zwave="6:restore_last_value=true"}
+Dimmer LightLivingMainDimmer "Диммер [%d]" <light> (gLightsLiving, gLiving) {zwave="6:restore_last_value=true"}
+Dimmer LightLivingMainLevel "Уровень [%d %%]" <light> {zwave="6:command=configuration,parameter=40"}
 
 Number TempLivingPeriod <period>
 Number TempLivingMenu "Зал [%.1f °C]" <temperature> (gLiving, gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/temperature:state:default]"}
 Number TempLiving "Температура [%.1f °C]" <temperature> (gLiving, gClimate, gTempHouseAvg) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/temperature:state:default]"}
 
 //~~~~~~~~~~~~~~~~~Коридор
-Switch LightHallMain "Общий [%d]" <light> (gLightsHall, gHall) {zwave="2:restore_last_value=true"}
+Switch LightHallMainSwitch "Вкл/Выкл" <light> (gLightsHall, gHall) {zwave="2:restore_last_value=true"}
+Dimmer LightHallMainDimmer "Диммер [%d]" <light> (gLightsHall, gHall) {zwave="2:restore_last_value=true"}
+Dimmer LightHallMainLevel "Уровень [%d %%]" <light> {zwave="2:command=configuration,parameter=40"}
 Switch SensorHallMotion "Движение [MAP(motion.map):%s]" <motion> (gHall) {zwave="5:command=SENSOR_BINARY" }
 Number SensorHallBattery "Батарея [%s %%]" <battery> (gHall, gBattery)  {zwave="5:command=BATTERY" }
 
@@ -133,7 +139,7 @@ Switch iPhone2Find "iPhone Женя" <phone> (gButtons) {exec="ON:php /volume1/H
 Number YandexTraffic "Пробки" {http="<[http://export.yandex.ru/bar/reginfo.xml?ncrnd=1204:600000:XSLT(yandex_probki.xsl)]"}
 
 //~~~~~~~~~~~~PLEX
-Switch PlexUpdate "Обновить" <plex> (gPlex, gButtons) {exec="ON:/opt/HomeAutomation/Scripts/UpdatePlex.sh"}
+Switch PlexUpdate "Plex" <plex> (gPlex, gButtons) {exec="ON:/opt/HomeAutomation/Scripts/UpdatePlex.sh"}
 //String PlexKitchenState "На кухне [MAP(ru.map):%s]" <plex> (gPlex) {plex="a95a3e3d-05ea-47c3-9380-f0059dcdc71f_Video#state"}
 
 //~~~~~~~~~~~АВТОМАТИЗАЦИЯ

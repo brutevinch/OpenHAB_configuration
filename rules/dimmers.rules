@@ -1,0 +1,45 @@
+import org.openhab.core.library.types.*
+import org.openhab.core.persistence.*
+import org.openhab.model.script.actions.*
+
+/*----------Памятка
+Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
+*/
+
+rule "Диммер в коридоре"
+        when
+		Item LightHallMainDimmer received command
+        then
+		if (LightHallMainDimmer.state > 0) {
+			postUpdate(LightHallMainSwitch, ON)
+		} else {
+			postUpdate(LightHallMainSwitch, OFF)
+		} 				
+		postUpdate(LightHallMainLevel, LightHallMainDimmer.state)
+	end
+
+rule "Диммер из веба в зале"
+        when
+                Item LightLivingMainDimmer received command
+        then
+                var Number percent = 0
+                if(LightLivingMainDimmer.state instanceof DecimalType) percent = LightLivingMainDimmer.state as DecimalType
+                if(receivedCommand==INCREASE) percent = percent + 5
+                if(receivedCommand==DECREASE) percent = percent - 5
+                if(percent<0)   percent = 0
+                if(percent>100) percent = 100
+                postUpdate(LightLivingMainDimmer, percent)
+end
+
+rule "Диммер из веба в спальне"
+        when
+                Item LightBedroomMainDimmer received command
+        then
+                var Number percent = 0
+                if(LightBedroomMainDimmer.state instanceof DecimalType) percent = LightBedroomMainDimmer.state as DecimalType
+                if(receivedCommand==INCREASE) percent = percent + 5
+                if(receivedCommand==DECREASE) percent = percent - 5
+                if(percent<0)   percent = 0
+                if(percent>100) percent = 100
+                postUpdate(LightBedroomMainDimmer, percent)
+end

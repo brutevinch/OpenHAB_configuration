@@ -1,47 +1,59 @@
-sitemap default label="Наш Дом"
-{
+sitemap default label="Наш Дом"{
 	Frame label="Комнаты" {
 		Text item=TempBedroomMenu icon="bedroom" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
-   			Slider item=LightBedroomMain
+   			Switch item=LightBedroomMainSwitch
+			Slider item=LightBedroomMainDimmer switchSupport
 			Text item=LightBedroomMainLevel {
-			Slider item=LightBedroomMainLevel 
+				Slider item=LightBedroomMainLevel 
 			}
-                        Text label="Ночник" icon="light"  {
-                                Colorpicker item=NightlightBedroomColor
-                                Slider item=NightlightBedroomHue
-                                Slider item=NightlightBedroomSaturation
-                                Slider item=NightlightBedroomBrightness
-                                Slider item=NightlightBedroomKelvin
-                                }
                         Selection item=sLightsBedroom mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"]
+			Group item=gTvBedroom label="Телевизор" {
+                        	Switch item=TvBedroomPower mappings=[OFF="Выключить           "]
+                        	Switch item=TvBedroomSource label="Источник" mappings=[0="TV       ", 1="HDMI      "]
+                        	Switch item=TvBedroomSourceButton mappings=[ON="Источник              "]
+                        	Switch item=TvBedroomVolume mappings=[DOWN="-           ", UP="+           "]
+                        	Switch item=TvBedroomMute
+                        	Switch item=TvBedroomChannel mappings=[DOWN="-           ", UP="+           "]
+                        	Switch item=TvBedroomInfo mappings=[ON="Инфо                    "]
+	                }
+                       	Text item=TempBedroom valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
+                        Text item=HumidityBedroom
+
 		}
-		Group item=gToilet  {
+/*		Group item=gToilet  {
 			Switch item=Waterheating
 		}
+*/
 		Text item=TempKitchenMenu icon="kitchen" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
 		    	Text item=TempKitchen valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
                         Text item=HumidityKitchen		
 		}
 		Text item=TempHallMenu icon="hall" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
-			Switch item=LightHallMain
-			Text item=TempHall valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
+			Switch item=LightHallMainSwitch
+                        Selection item=sLightsHall mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"]
 			Text item=SensorHallMotion
+			Text item=TempHall valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
 		}
 
-		Text item=TempLivingMenu icon="living" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
-                        Slider item=LightLivingMain
+		Text item=TempLivingMenu icon="livingroom" valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
+			Switch item=LightLivingMainSwitch
+                        Slider item=LightLivingMainDimmer switchSupport
+                        Text item=LightLivingMainLevel {
+                                Slider item=LightLivingMainLevel
+                        }
+                        Selection item=sLightsLiving mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"]
                         Text item=TempLiving valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
                 }
 
 	}	
 	Frame label="Сцены"  {
-		Selection item=sLightsAll label="В доме" mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"] 		
+		Selection item=sLightsAll label="Все комнаты" mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"] 		
                 Selection item=sLightsBedroom label="Спальня" mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"]
-	}	
-	Frame label="Статус"  {
-		Switch item=sNobodyhome
+                Selection item=sLightsLiving label="Зал" mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"]
+                Selection item=sLightsHall label="Коридор" mappings=[0="День", 1="Вечер", 2="Поздний вечер", 3="Ночь"]
 	}	
 	Frame label="Климат"  {
+/*
 		Text label="Тепло" icon="heater" {
 			Text item=HeaterTempAck label="Обогреватель [%.1f °C]" icon="heater" {			
 				Text item=HeaterModeAck
@@ -49,7 +61,7 @@ sitemap default label="Наш Дом"
 				Switch item=HeaterState
 			}
 		}
-
+*/
 		Text item=TempOutMenu valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"]  {
 			Text item=TempOut valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"] 			
 			Text item=HumidityOut	
@@ -65,10 +77,10 @@ sitemap default label="Наш Дом"
 		Text item=gTempHouseAvg valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"] {
 			Text item=TempHallMenu valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]  {
                         	Text item=TempHall valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
-                        	Switch item=TempHallPeriod label="Период" mappings=[0="Неделя", 1="День", 2="Месяц"]
-                        	Chart item=TempHall period=W refresh=30000 visibility=[TempHallPeriod==0, TempHallPeriod=="Uninitialized"]
-                        	Chart item=TempHall period=D refresh=30000 visibility=[TempHallPeriod==1]
-                        	Chart item=TempHall period=M refresh=30000 visibility=[TempHallPeriod==2]
+	                        	Switch item=TempHallPeriod label="Период" mappings=[0="Неделя", 1="День", 2="Месяц"]
+        	                	Chart item=TempHall period=W refresh=30000 visibility=[TempHallPeriod==0, TempHallPeriod=="Uninitialized"]
+                	        	Chart item=TempHall period=D refresh=30000 visibility=[TempHallPeriod==1]
+                        		Chart item=TempHall period=M refresh=30000 visibility=[TempHallPeriod==2]
                 		}
   			Text item=TempKitchenMenu valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]  {
                        	 	Text item=TempKitchen valuecolor=[>27="red", >24="orange", >21="green", <=21="blue"]
@@ -89,12 +101,18 @@ sitemap default label="Наш Дом"
 
 		}
 	}	
+
+        Frame label="Статус"  {
+                Switch item=sNobodyhome
+        }
+
 	Frame label="Медиа"  {
-		Text label="Plex" icon="plex" {
 			Switch item=PlexUpdate  mappings=[ON="Обновить                 "]
-//			Text item=PlexBedroomState
-//			Text item=PlexKitchenState
+/*		Text label="Plex" icon="plex" {
+			Text item=PlexBedroomState
+			Text item=PlexKitchenState
 			}
+*/
 		Group item=gTvBedroom  {
 			Switch item=TvBedroomPower mappings=[OFF="Выключить           "] 			
 			Switch item=TvBedroomSource label="Источник" mappings=[0="TV       ", 1="HDMI      "] 			
@@ -105,7 +123,7 @@ sitemap default label="Наш Дом"
 			Switch item=TvBedroomInfo mappings=[ON="Инфо                    "] 			
 		}		
 	}	
-	Frame label="Ресурсы"  {
+/*	Frame label="Ресурсы"  {
 		Text label="Телефоны" icon="phone" {
 			Text label="Влад" icon="phone" {
 			Switch item=iPhone1Find mappings=[ON="Найти               "] 		
@@ -115,7 +133,7 @@ sitemap default label="Наш Дом"
 			Switch item=iPhone2Find mappings=[ON="Найти               "] 	
 			}}	
 	}	
-
+*/
 	Frame label="Система" {
 		Text label="Правила" icon="rules" {
 			Switch item=rMotionHall
