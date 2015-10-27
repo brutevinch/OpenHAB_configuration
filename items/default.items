@@ -109,10 +109,13 @@ Number HumidityKitchen "Влажность [%.1f %%]" <temperature> (gKitchen, g
 
 //~~~~~~~~~~~~~~~~~Улица
 Number TempOutPeriod <period>
-Number TempOutMenu "На улице [%d °C]" <temperature> { weather="locationId=home, type=temperature, property=current" }
-Number TempOut "Температура [%d °C]" <temperature> (gClimate) { weather="locationId=home, type=temperature, property=current" }
-Number HumidityOut "Влажность [%d %%]" <humidity>  (gClimate) { weather="locationId=home, type=atmosphere, property=humidity" }
-Number PressureOut "Давление [%.1f мм]" <temperature> (gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/pressure:state:default]"}
+Number TempOutMenu "На улице [%.1f °C]" <temperature> {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/temperatureOutdoor:state:default]"}
+Number TempOut "Температура [%.1f °C]" <temperature> (gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/temperatureOutdoor:state:default]"}
+Number HumidityOut "Влажность [%.1f %%]" <humidity>  (gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/humidityOutdoor:state:default]"}
+Number Pressure "Давление [%.1f мм]" <temperature> (gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/pressure:state:default]"}
+String Precipitation "Осадки [%s]" <temperature> (gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/precipitation:state:default]"}
+Number Illuminance "Освещенность [%d лк]" <temperature> (gClimate) {mqtt="<[mosquitto:/message/house/bedroom/climate/esp102/illuminance:state:default]"}
+
 
 DateTime DawnStart "Рассвет [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=start"}
 DateTime DawnEnd "Рассвет к [%1$tH:%1$tM]" <sunrise> (gSun) {astro="planet=sun,type=civilDawn,property=end"}

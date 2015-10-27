@@ -65,7 +65,9 @@ sitemap default label="Наш Дом"{
 		Text item=TempOutMenu valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"]  {
 			Text item=TempOut valuecolor=[>25="orange", >15="green", >5="orange", <=5="blue"] 			
 			Text item=HumidityOut	
-			Text item=PressureOut		
+			Text item=Pressure
+			Text item=Precipitation
+			Text item=Illuminance		
 			Text item=DawnStart		
 			Text item=DuskStart  			
 			Switch item=TempOutPeriod label="Период" mappings=[0="Неделя", 1="День", 2="Месяц"]

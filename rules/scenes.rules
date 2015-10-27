@@ -10,6 +10,11 @@ var int evening = 60
 var int postEvening = 22
 var int night = 1
 
+var int dayLight = 100
+var int eveningLight =50
+var int postEveningLight = 30
+var int nightLight = 1
+
 /*----------Памятка
 Time cron "[second] [minute] [hour] [DayOfWeeks(0-6 sunday=0)]  [Month(1-12)]
 */
@@ -19,10 +24,10 @@ rule "Сцены света в доме"
 		Item sLightsAll received command
     	then
         	switch(receivedCommand) {
-    			case 0 : sendCommand(sLights, 0)
-			case 1 : sendCommand(sLights, 1)       
-			case 2 : sendCommand(sLights, 2)
-			case 3 : sendCommand(sLights, 3)	
+    			case 0 : sendCommand(sLights, 0) //day
+			case 1 : sendCommand(sLights, 1) //evening 
+			case 2 : sendCommand(sLights, 2) //postEvening
+			case 3 : sendCommand(sLights, 3) //night
       		}
     	end
 
@@ -88,6 +93,41 @@ rule "Сцены света в коридоре"
                         }
                 }
         end
+
+rule "Освещение в доме от света на улице"
+        when
+        	Item Illuminance received update
+    	then
+        	if(Illuminance.state >= dayLight) 
+		{
+			if(sLightsAll.state != 0)
+			{
+		 		sendCommand(sLightsAll, 0)
+			}
+                } 
+		else if (Illuminance.state >= eveningLight && Illuminance.state < dayLight) 
+		{
+			if(sLightsAll.state != 1) 
+                        {
+				sendCommand(sLightsAll, 1)
+			}
+		}
+		else if (Illuminance.state >= postEveningLight && Illuminance.state < eveningLight)		
+		{
+			if(sLightsAll.state != 2)
+                        {
+				sendCommand(sLightsAll, 2)
+			}		
+		}
+		else if (Illuminance.state >= nightLight && Illuminance.state < postEveningLight)
+                {
+			if(sLightsAll.state != 3)
+                        {
+		                sendCommand(sLightsAll, 3)
+                	}
+		}
+	end
+
 
 rule "Никого нет дома"
 	when
